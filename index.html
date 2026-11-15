@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLINK//SCOPE — Explore the changing sky</title>
+<style>
+:root{--bg:#090d1d;--panel:#131c35;--panel2:#1b2746;--text:#edf2ff;--muted:#a7b5d3;--cyan:#79d7e4;--violet:#a49cff;--gold:#f0c477;--line:#2a385b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 78% 5%,#1d2850 0,transparent 28%),var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.5}
+header{max-width:1180px;margin:auto;padding:28px 24px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.logo{font-weight:850;letter-spacing:.12em;font-size:1.25rem}.logo span{color:var(--cyan)}.tag{color:var(--muted);font-size:.8rem;letter-spacing:.12em}
+main{max-width:1180px;margin:auto;padding:34px 24px 70px}.eyebrow{color:var(--cyan);font-size:.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+h1{font-size:clamp(2.2rem,5vw,4.5rem);line-height:1.03;margin:12px 0 14px;letter-spacing:-.04em}.lead{color:var(--muted);max-width:720px;font-size:1.08rem}
+.notice{margin:24px 0;padding:12px 15px;border:1px solid #78613b;background:#332b1d;color:#f7dca7;border-radius:10px;font-size:.9rem}
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,.8fr);gap:18px;margin-top:25px}
+.panel{background:linear-gradient(145deg,var(--panel),#10172c);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 18px 50px #0003}
+.panel h2{font-size:1rem;margin:0 0 5px}.sub{font-size:.83rem;color:var(--muted);margin:0 0 15px}
+.sky-wrap{position:relative;background:#050916;border-radius:12px;overflow:hidden;border:1px solid #29385d}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.sky-label{position:absolute;top:12px;left:13px;background:#081022d9;border:1px solid #405174;border-radius:6px;padding:5px 9px;font-size:.72rem;letter-spacing:.1em;color:var(--cyan)}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:15px}
+button{border:1px solid #53658e;background:var(--panel2);color:var(--text);padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:650}
+button:hover,button:focus{border-color:var(--cyan);outline:none}button.primary{background:#244958;border-color:#3e8291}
+.range{flex:1;min-width:150px;accent-color:var(--cyan)}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem;margin-top:8px}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:.75rem;color:var(--gold);background:#382e1c;padding:5px 9px;border-radius:99px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.stat{padding:13px 0;border-bottom:1px solid var(--line)}.stat:last-child{border:0}.stat strong{display:block;font-size:1.35rem}.stat span{color:var(--muted);font-size:.8rem}
+.explain{margin-top:18px}.explain p,.explain li{color:var(--muted);font-size:.9rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+ul{padding-left:20px;margin-bottom:0}
+footer{max-width:1180px;margin:auto;padding:0 24px 30px;color:#7888aa;font-size:.78rem}
+a{color:var(--cyan)}
+@media(max-width:800px){.grid,.two{grid-template-columns:1fr}header{align-items:flex-start;gap:10px;flex-direction:column}.tag{font-size:.7rem}}
+</style>
+</head>
+<body>
+<header><div class="logo">BLINK<span>//</span>SCOPE</div><div class="tag">A TIME-DOMAIN SKY EXPLORER · PROTOTYPE</div></header>
+<main>
+  <div class="eyebrow">NASA Space Apps Challenge · Planet X and SPHEREx</div>
+  <h1>The universe<br>doesn't stand still.</h1>
+  <p class="lead">Explore how repeated observations can reveal changes in the sky. Compare two illustrative sky frames, inspect a candidate variation, and learn why every apparent change needs scientific verification.</p>
+  <div class="notice"><strong>Prototype transparency:</strong> The star-field images and candidate below are procedurally generated demonstration data, not actual SPHEREx observations or confirmed astronomical detections. This prototype demonstrates the intended user experience.</div>
+  <div class="grid">
+    <section class="panel">
+      <h2>Observation comparison</h2>
+      <p class="sub">Switch between two simulated observations of the same field.</p>
+      <div class="sky-wrap"><canvas id="sky" width="960" height="540" aria-label="Illustrative star field comparison"></canvas><div class="sky-label" id="frameLabel">OBSERVATION A · EARLIER</div></div>
+      <div class="controls">
+        <button class="primary" id="toggle">Show later observation</button>
+        <button id="blink">Blink comparison</button>
+        <input class="range" id="timeline" type="range" min="0" max="1" step="1" value="0" aria-label="Observation timeline">
+      </div>
+      <div class="meta"><span>Earlier observation</span><span id="dateLabel">Simulated epoch 1</span><span>Later observation</span></div>
+    </section>
+    <aside class="panel">
+      <h2>Candidate investigation</h2>
+      <p class="sub">Example record · simulated data</p>
+      <div class="status"><i class="dot"></i> NEEDS VERIFICATION</div>
+      <div class="stat"><strong>Candidate 001</strong><span>Illustrative source label</span></div>
+      <div class="stat"><strong id="positionText">Position appears shifted</strong><span>Example comparison result</span></div>
+      <div class="stat"><strong>Unknown</strong><span>Physical classification</span></div>
+      <div class="explain"><h2>What could explain a change?</h2>
+        <ul><li>A moving object, such as an asteroid</li><li>A variable or transient source</li><li>Image alignment or instrumental effects</li></ul>
+      </div>
+    </aside>
+  </div>
+  <div class="two">
+    <section class="panel"><h2>Why compare observations?</h2><p class="sub">A single image is a snapshot. Repeated observations add a time dimension, helping researchers investigate changing brightness or apparent position.</p></section>
+    <section class="panel"><h2>How this relates to SPHEREx</h2><p class="sub">SPHEREx is an all-sky near-infrared spectral survey with 102 spectral bands. Those bands represent wavelengths; they are not 102 dates. A real implementation must compare appropriately calibrated observations of the same sky region.</p></section>
+  </div>
+  <section class="panel explain"><h2>Next scientific steps</h2><p>Connect real SPHEREx observations from NASA/IPAC IRSA; align and calibrate image pairs; account for observation metadata and artifacts; cross-match candidate sources with established catalogs; then present candidate classifications with uncertainty. A visual difference alone is not evidence of a new planet.</p><p>Data resource: <a href="https://irsa.ipac.caltech.edu/Missions/spherex.html" target="_blank" rel="noopener">NASA/IPAC SPHEREx archive</a>.</p></section>
+</main>
+<footer>BLINK//SCOPE · Educational prototype · Demonstration data only · Not affiliated with or endorsed by NASA.</footer>
+<script>
+const canvas=document.getElementById('sky'),ctx=canvas.getContext('2d');
+let later=false,blinkTimer=null;
+let seed=82;
+function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+const stars=Array.from({length:155},(_,i)=>({x:rand()*960,y:rand()*540,r:.7+rand()*2.2,a:.35+rand()*.65,h:rand()>0.82?190:rand()>0.5?250:215}));
+function draw(isLater){
+ ctx.fillStyle='#050916';ctx.fillRect(0,0,960,540);
+ // subtle nebular haze
+ const g=ctx.createRadialGradient(540,270,10,540,270,440);g.addColorStop(0,'#1a2448');g.addColorStop(1,'#050916');ctx.fillStyle=g;ctx.fillRect(0,0,960,540);
+ for(const s of stars){ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`hsla(${s.h},75%,85%,${s.a})`;ctx.fill();if(s.r>2){ctx.fillRect(s.x-5,s.y-.35,10,.7);ctx.fillRect(s.x-.35,s.y-5,.7,10)}}
+ // illustrative candidate: position changes slightly between frames
+ const x=isLater?602:575,y=isLater?304:291;
+ ctx.beginPath();ctx.arc(x,y,13,0,Math.PI*2);ctx.strokeStyle='#f0c477';ctx.lineWidth=2;ctx.stroke();
+ ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fillStyle='#f0c477';ctx.fill();
+ ctx.fillStyle='#f0c477';ctx.font='15px Segoe UI';ctx.fillText('Candidate 001',x+20,y-13);
+}
+function update(){later=document.getElementById('timeline').value==='1';draw(later);document.getElementById('frameLabel').textContent=later?'OBSERVATION B · LATER':'OBSERVATION A · EARLIER';document.getElementById('dateLabel').textContent=later?'Simulated epoch 2':'Simulated epoch 1';document.getElementById('toggle').textContent=later?'Show earlier observation':'Show later observation';document.getElementById('positionText').textContent=later?'Illustrative offset from epoch 1':'Reference position';}
+document.getElementById('timeline').addEventListener('input',update);
+document.getElementById('toggle').addEventListener('click',()=>{document.getElementById('timeline').value=later?'0':'1';update()});
+document.getElementById('blink').addEventListener('click',()=>{if(blinkTimer){clearInterval(blinkTimer);blinkTimer=null;document.getElementById('blink').textContent='Blink comparison';return}document.getElementById('blink').textContent='Stop blinking';blinkTimer=setInterval(()=>{document.getElementById('timeline').value=later?'0':'1';update()},650)});
+update();
+</script>
+</body>
+</html>
